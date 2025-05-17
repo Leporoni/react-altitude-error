@@ -14,7 +14,6 @@ import {
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 
-// Interface for results
 interface Results {
   ISA: string;
   PE: string;
@@ -23,14 +22,11 @@ interface Results {
   TA: string;
 }
 
-// Create light and dark themes
 const createAppTheme = (mode: 'light' | 'dark') =>
   createTheme({
     palette: {
       mode,
-      primary: {
-        main: '#1976d2',
-      },
+      primary: { main: '#1976d2' },
       background: {
         default: mode === 'light' ? '#f5f5f5' : '#121212',
         paper: mode === 'light' ? '#fff' : '#1e1e1e',
@@ -48,20 +44,35 @@ const AltitudeCalculatorApp: React.FC = () => {
 
   const theme = createAppTheme(darkMode ? 'dark' : 'light');
 
-  // Function to format decimal input
-  const formatDecimalInput = (value: string) => {
-    const regex = /^\d*\.?\d*$/;
-    if (regex.test(value) || value === '') {
-      return value;
-    }
-    return '';
-  };
+  const formatDecimalInput = (value: string) =>
+    value.replace(/[^0-9.]/g, '');
+
+  const isFormValid =
+    pressureAltitude.trim() !== '' &&
+    qnh.trim() !== '' &&
+    flightLevel.trim() !== '' &&
+    temperature.trim() !== '' &&
+    !isNaN(Number(pressureAltitude)) &&
+    !isNaN(Number(qnh)) &&
+    !isNaN(Number(flightLevel)) &&
+    !isNaN(Number(temperature));
 
   const calculateErrors = () => {
     const PA = parseFloat(pressureAltitude);
     const QNH = parseFloat(qnh);
     const FL = parseFloat(flightLevel);
     const T = parseFloat(temperature);
+
+    if ([PA, QNH, FL, T].some((v) => isNaN(v))) {
+      setResults({
+        ISA: 'NaN',
+        PE: 'NaN',
+        TE: 'NaN',
+        CE: 'NaN',
+        TA: 'NaN',
+      });
+      return;
+    }
 
     const ISA = 15 - (2 * PA) / 1000;
     const QNE = 1013.2;
@@ -77,6 +88,14 @@ const AltitudeCalculatorApp: React.FC = () => {
       CE: CE.toFixed(2),
       TA: TA.toFixed(2),
     });
+  };
+
+  const handleReset = () => {
+    setPressureAltitude('');
+    setQnh('');
+    setFlightLevel('');
+    setTemperature('');
+    setResults(null);
   };
 
   return (
@@ -157,7 +176,7 @@ const AltitudeCalculatorApp: React.FC = () => {
                 <Box sx={{ flex: '1 1 300px', minWidth: 0 }}>
                   <TextField
                     fullWidth
-                    label="Temperature"
+                    label="Temperature on FL"
                     variant="outlined"
                     value={temperature}
                     onChange={(e) => setTemperature(formatDecimalInput(e.target.value))}
@@ -178,6 +197,7 @@ const AltitudeCalculatorApp: React.FC = () => {
                   color="primary"
                   size="large"
                   onClick={calculateErrors}
+                  disabled={!isFormValid}
                   sx={{
                     px: 6,
                     py: 1.5,
@@ -216,6 +236,16 @@ const AltitudeCalculatorApp: React.FC = () => {
                         True Altitude: {results.TA} ft
                       </Typography>
                     </Box>
+                  </Box>
+                  <Box sx={{ mt: 3 }}>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      fullWidth
+                      onClick={handleReset}
+                    >
+                      Limpar
+                    </Button>
                   </Box>
                 </Box>
               )}
