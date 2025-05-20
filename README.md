@@ -50,19 +50,22 @@ To get started with the project, follow these steps:
 ```
 react-altitude-error-app
 ├── public
-│   ├── index.html
+│   └── index.html
 ├── src
 │   ├── components
-│   │   ├── AltitudeErrorCalculator.tsx
-│   │   └── UserInteractionPage.tsx
-│   ├── App.tsx
-│   ├── index.tsx
-│   └── styles
-│       └── App.css
+│   │   ├── AltitudeCalculatorApp.tsx
+│   │   ├── AltitudeForm.tsx
+│   │   ├── AltitudeResults.tsx
+│   │   └── ResetButton.tsx
+│   ├── styles
+│   │   └── App.css
+│   └── index.tsx
 ├── package.json
 ├── tsconfig.json
 └── README.md
 ```
+
+> **Note:** The main application logic is now modularized in `src/components`. The entry point is `src/index.tsx`.
 
 ## Technologies Used
 

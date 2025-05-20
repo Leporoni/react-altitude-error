@@ -7,7 +7,7 @@ interface ResetButtonProps {
 
 const ResetButton: React.FC<ResetButtonProps> = ({ onReset }) => (
     <Button onClick={onReset} color="secondary" variant="outlined" fullWidth>
-        Limpar
+        Reset
     </Button>
 );
 
